@@ -67,7 +67,7 @@ func main() {
 			l := log.New(os.Stderr, log.INFO, node.Name())
 			defer wg.Done()
 			defer sem.Signal()
-			args := []string{"bastion", "ssh", node.PrivateIpAddress}
+			args := []string{node.PrivateIpAddress}
 			args = append(args, cmd...)
 			c := exec.Command("ssh", args...)
 			c.Stderr = l
