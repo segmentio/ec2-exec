@@ -74,7 +74,7 @@ func main() {
 			c.Stdout = l
 			err := c.Run()
 			if err != nil {
-				log.Error("failed: %s", err)
+				l.Error("failed: %s", err)
 			}
 		}(node)
 	}
