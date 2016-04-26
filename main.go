@@ -2,9 +2,10 @@ package main
 
 import "github.com/mattrobenolt/semaphore"
 import "github.com/mitchellh/goamz/aws"
-import "github.com/visionmedia/docopt"
+import "github.com/tj/docopt"
 import "github.com/segmentio/go-ec2"
 import "github.com/segmentio/go-log"
+import "strings"
 import "strconv"
 import "os/exec"
 import "sync"
@@ -64,9 +65,17 @@ func main() {
 		wg.Add(1)
 
 		go func(node ec2.Instance) {
-			l := log.New(os.Stderr, log.INFO, node.Name())
 			defer wg.Done()
 			defer sem.Signal()
+
+			var prefix string
+			if strings.Contains(name, "*") {
+				prefix = node.Name()
+			} else {
+				prefix = node.ID()
+			}
+
+			l := log.New(os.Stderr, log.INFO, prefix)
 			args := []string{node.PrivateIpAddress}
 			args = append(args, cmd...)
 			c := exec.Command("ssh", args...)
